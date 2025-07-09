@@ -26,7 +26,10 @@ services:
     <<: *default-logging
 
   php:
-    image: php:8.2-fpm
+    image: php-mysql:8.2-fpm
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: php
     hostname: phpsrv
     volumes:
