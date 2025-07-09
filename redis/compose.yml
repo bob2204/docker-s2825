@@ -1,0 +1,37 @@
+# Traduction de la commande cli
+#
+# docker run -d --network lempnet --name redis -v redis:/data -p 6379:6379 -e PASSWORD=azerty redis:8.0.3-alpine3.21
+#
+
+name: redis-dev
+services:
+  redis-srv:
+    image: redis:8.0.3-alpine3.21
+    container_name: redis
+    hostname: redissrv
+    volumes:
+      - redis:/data
+      - ./conf:/mnt
+    ports:
+      - 6379:6379
+    environment:
+      - PASSWORD=azerty
+      - SERVICE=redis
+    networks:
+      lempnet:
+        ipv4_address: 172.25.0.150
+    restart: unless-stopped
+
+volumes:
+  redis:
+
+networks:
+  lempnet:
+    external: true
+    #    ipam:
+    #      config:
+    #        - subnet: 172.30.0.0/16
+    #          gateway: 172.30.0.254
+    #    driver_opts:
+    #      com.docker.network.bridge.name: lempnet1
+
