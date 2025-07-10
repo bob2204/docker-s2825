@@ -12,18 +12,32 @@ services:
     image: nginx:${NGINX_IMAGE_TAG}
     container_name: www
     hostname: www
-    ports:
-      - 80:80
     volumes:
       - ./conf:/etc/nginx/conf.d
       - ./html:/usr/share/nginx/html
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost/index.html
+      interval: 5s
+      timeout: 1s
+      retries: 2
+    depends_on:
+      php:
+        condition: service_healthy
+        restart: true
     networks:
       lempnet:
         ipv4_address: ${LEMPNET_SUBNET_PREFIX}.${NGINX_IPV4_ADDRESS}
-    depends_on:
-      - php
+      traefiknet:
     restart: unless-stopped
     <<: *default-logging
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_traefiknet
+      - traefik.http.routers.www.rule=Host(`www.lemp.stage`)
 
   php:
     image: php-mysql:8.2-fpm
@@ -31,6 +45,11 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: php
+    healthcheck:
+      test: ["CMD","cat","/var/www/html/index.php"]
+      interval: 5s
+      timeout: 1s
+      retries: 2
     hostname: phpsrv
     volumes:
       - ./html:/var/www/html
@@ -66,3 +85,6 @@ networks:
           gateway: ${LEMPNET_SUBNET_PREFIX}.${LEMPNET_GATEWAY}
     driver_opts:
       com.docker.network.bridge.name: lempnet0
+  traefiknet:
+    name: proxy_traefiknet
+    external: true
