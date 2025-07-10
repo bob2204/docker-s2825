@@ -11,6 +11,7 @@ services:
     volumes:
       - ./traefik.yml:/etc/traefik/traefik.yaml
       - /run/docker.sock:/run/docker.sock
+      - ./users.passwd:/etc/traefik/users.passwd
     networks:
       traefiknet:
     restart: always

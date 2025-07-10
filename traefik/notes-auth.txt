@@ -1,0 +1,7 @@
+Création du fichier users.passwd
+
+docker run --rm -it -v ./:/mnt httpd bash
+> cd /mnt
+> htpasswd [-c] users.passwd bob
+...
+> exit

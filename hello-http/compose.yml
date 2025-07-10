@@ -20,6 +20,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy_traefiknet
       - traefik.http.routers.hello-1.rule=Host(`www.hello-1.stage`)
+      - traefik.http.services.hello-1.loadbalancer.server.port=8080
 
   hello-2:
     image: bob2606/hello-http:0.8.30
@@ -42,6 +43,7 @@ services:
       - traefik.http.middlewares.hello-2-strip.stripprefix.prefixes=/hello-2
       - traefik.http.middlewares.hello-2-auth.basicauth.usersfile=/etc/traefik/users.passwd
       - traefik.http.routers.hello-2.middlewares=hello-2-strip,hello-2-auth
+      - traefik.http.services.hello-2.loadbalancer.server.port=8080
 
   hello-3:
     image: bob2606/hello-http:0.8.30
@@ -63,6 +65,7 @@ services:
       - traefik.http.routers.hello-3.rule=(Host(`www.hello-3.stage`)&&(PathPrefix(`/hello-3`)))
       - traefik.http.middlewares.hello-3-strip.stripprefix.prefixes=/hello-3
       - traefik.http.routers.hello-3.middlewares=hello-3-strip
+      - traefik.http.services.hello-3.loadbalancer.server.port=8080
 
 networks:
   hellonet:
