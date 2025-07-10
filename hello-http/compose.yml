@@ -6,8 +6,6 @@ services:
     image: bob2606/hello-http:0.8.30
     container_name: hello-1
     hostname: hello-1
-    ports:
-      - 8081:8080
     environment:
       MSG: Hello-1
     deploy:
@@ -27,8 +25,6 @@ services:
     image: bob2606/hello-http:0.8.30
     container_name: hello-2
     hostname: hello-2
-    ports:
-      - 8082:8080
     environment:
       MSG: Hello-2
     deploy:
@@ -44,14 +40,13 @@ services:
       - traefik.docker.network=proxy_traefiknet
       - traefik.http.routers.hello-2.rule=PathPrefix(`/hello-2`)
       - traefik.http.middlewares.hello-2-strip.stripprefix.prefixes=/hello-2
-      - traefik.http.routers.hello-2.middlewares=hello-2-strip
+      - traefik.http.middlewares.hello-2-auth.basicauth.usersfile=/etc/traefik/users.passwd
+      - traefik.http.routers.hello-2.middlewares=hello-2-strip,hello-2-auth
 
   hello-3:
     image: bob2606/hello-http:0.8.30
     container_name: hello-3
     hostname: hello-3
-    ports:
-      - 8083:8080
     environment:
       MSG: Hello-3
     deploy:
