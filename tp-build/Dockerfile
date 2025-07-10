@@ -1,6 +1,7 @@
 FROM debian:12
-RUN  apt update
-RUN  apt -y install openssh-server
-RUN  mkdir /run/sshd
-RUN  date > /tmp/date-install.log
+RUN  apt update \
+  && apt -y install openssh-server \
+  && mkdir /run/sshd \
+  && date > /tmp/date-install.log
+EXPOSE 22
 CMD  ["/usr/sbin/sshd","-D"]
