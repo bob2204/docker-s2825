@@ -1,0 +1,21 @@
+---
+services:
+  load:
+    image: busybox:1.28
+    container_name: load
+    command:
+      - sh
+      - -c
+      - |
+        while :
+        do
+          :
+        done
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 100M
+        reservations:
+          cpus: "0.3"
+          memory: 50M
