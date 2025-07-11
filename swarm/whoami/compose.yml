@@ -3,12 +3,14 @@ services:
   whoami:
     image: traefik/whoami
     hostname: whoami
-    ports:
-      - 80:80
+      - 8080:80
     networks:
       whonet:
     deploy:
       replicas: 2
+      placement:
+        constraints:
+          - node.labels.whoami==1
 
 networks:
   whonet:
