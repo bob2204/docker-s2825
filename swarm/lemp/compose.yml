@@ -1,0 +1,63 @@
+---
+x-logging: &default-logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: 5
+
+services:
+  www:
+    image: nginx:1.28
+    ports:
+      - 80:80
+    hostname: www
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - html:/usr/share/nginx/html
+    networks:
+      lempnet:
+    <<: *default-logging
+
+  php:
+    image: php:8.2-fpm
+    hostname: phpsrv
+    volumes:
+      - html:/var/www/html
+    networks:
+      lempnet:
+    <<: *default-logging
+
+  db:
+    image: mariadb:10.8
+    hostname: mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=azerty
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      lempnet:
+    <<: *default-logging
+
+volumes:
+  conf:
+    driver_opts:
+      type: nfs
+      o: addr=192.168.56.200,vers=4.2
+      device: ":/conf"
+  html:
+    driver_opts:
+      type: nfs
+      o: addr=192.168.56.200,vers=4.2
+      device: ":/html"
+  db:
+    driver_opts:
+      type: nfs
+      o: addr=192.168.56.200,vers=4.2
+      device: ":/db"
+
+networks:
+  lempnet:
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
