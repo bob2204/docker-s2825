@@ -1,0 +1,14 @@
+---
+services:
+  whoami:
+    image: traefik/whoami
+    hostname: whoami
+    ports:
+      - 80:80
+    networks:
+      whonet:
+    deploy:
+      replicas: 2
+
+networks:
+  whonet:
