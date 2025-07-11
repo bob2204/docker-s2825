@@ -32,28 +32,34 @@ services:
     image: mariadb:10.8
     hostname: mariadb
     environment:
-      - MARIADB_ROOT_PASSWORD=azerty
+      - MARIADB_ROOT_PASSWORD_FILE=/run/secrets/mariadb
+    secrets:
+      - mariadb
     volumes:
       - db:/var/lib/mysql
     networks:
       lempnet:
     <<: *default-logging
 
+secrets:
+  mariadb:
+    external: true
+
 volumes:
   conf:
     driver_opts:
       type: nfs
-      o: addr=192.168.56.200,vers=4.2
+      o: addr=192.168.56.250,vers=4.2
       device: ":/conf"
   html:
     driver_opts:
       type: nfs
-      o: addr=192.168.56.200,vers=4.2
+      o: addr=192.168.56.250,vers=4.2
       device: ":/html"
   db:
     driver_opts:
       type: nfs
-      o: addr=192.168.56.200,vers=4.2
+      o: addr=192.168.56.250,vers=4.2
       device: ":/db"
 
 networks:
